@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#fff8f0" />
+  <title>🍣 Sushi Dash - スシダッシュ</title>
+  <meta name="description" content="30秒で遊べる寿司分類アクション＋寿司ネタガチャ。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ヘッダー -->
+    <header class="topbar">
+      <div class="title">🍣 <span class="jp">スシダッシュ</span></div>
+      <div class="stats">
+        <div class="stat-chip">🪙 <span id="coin-count">0</span></div>
+      </div>
+    </header>
+
+    <!-- タブ -->
+    <nav class="tabs">
+      <button class="tab-btn active" data-view="home">ホーム</button>
+      <button class="tab-btn" data-view="gacha">ガチャ</button>
+      <button class="tab-btn" data-view="collection">図鑑</button>
+    </nav>
+
+    <!-- ホーム画面 -->
+    <section id="view-home" class="view active">
+      <div class="home-card">
+        <h2>30秒で勝負！</h2>
+        <p class="lead">流れてくる寿司を、<br>正しい色のお皿に仕分けよう。<br>スコアでコインゲット、ガチャで寿司ネタコレクション！</p>
+        <button id="start-btn" class="btn-primary">ゲームスタート</button>
+
+        <div class="howto">
+          <strong>あそびかた</strong><br>
+          ① ベルトの寿司をタップして選ぶ<br>
+          ② 同じ色の皿をタップで仕分け<br>
+          ③ 連続成功で <strong>コンボボーナス</strong>！<br>
+          ④ コインを貯めて <strong>ガチャ</strong> を回そう
+        </div>
+
+        <div class="home-actions">
+          <div style="font-size:0.85rem;color:#6b6b6b;">
+            ハイスコア: <strong id="best-score">0</strong> ／ プレイ回数: <strong id="total-plays">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- 広告スロット（将来差し込み） -->
+      <div class="ad-slot">[ AD ]</div>
+    </section>
+
+    <!-- ゲーム画面 -->
+    <section id="view-game" class="view">
+      <div class="game-hud">
+        <div class="hud-item">
+          <span class="label">残り</span>
+          <span class="value timer" id="hud-timer">30</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">スコア</span>
+          <span class="value" id="hud-score">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">コンボ</span>
+          <span class="value combo" id="hud-combo">0</span>
+        </div>
+      </div>
+
+      <div class="belt" id="belt"></div>
+
+      <div class="plates" id="plates">
+        <button class="plate red"    data-color="red"   ><span>🍱</span><span class="label">赤</span></button>
+        <button class="plate white"  data-color="white" ><span>🍱</span><span class="label">白</span></button>
+        <button class="plate orange" data-color="orange"><span>🍱</span><span class="label">橙</span></button>
+        <button class="plate green"  data-color="green" ><span>🍱</span><span class="label">緑</span></button>
+      </div>
+
+      <div style="text-align:center;">
+        <button id="quit-btn" class="btn-secondary">やめる</button>
+      </div>
+    </section>
+
+    <!-- ガチャ画面 -->
+    <section id="view-gacha" class="view">
+      <div class="gacha-card">
+        <div class="gacha-icon">🎁</div>
+        <h2>寿司ネタガチャ</h2>
+        <p style="color:#6b6b6b;font-size:0.9rem;">レアな寿司ネタをゲットしよう</p>
+        <div class="cost">🪙 <span id="gacha-cost">100</span> コイン</div>
+        <div>
+          <button id="gacha-once" class="btn-primary">1回まわす</button>
+        </div>
+        <div class="gacha-rates">
+          <table>
+            <tr><td>N（ノーマル）</td>  <td>60%</td></tr>
+            <tr><td>R（レア）</td>      <td>28%</td></tr>
+            <tr><td>SR（スーパーレア）</td><td>10%</td></tr>
+            <tr><td>SSR（超レア）</td>  <td>2%</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="ad-slot">[ AD ]</div>
+    </section>
+
+    <!-- 図鑑画面 -->
+    <section id="view-collection" class="view">
+      <div class="collection-header">
+        <div style="flex:1;">
+          <div><strong>寿司ネタ図鑑</strong></div>
+          <div style="font-size:0.85rem;color:#6b6b6b;">
+            <span id="coll-owned">0</span> / <span id="coll-total">0</span> 種類
+          </div>
+          <div class="progress-bar"><div id="coll-progress" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="collection-grid" id="collection-grid"></div>
+    </section>
+
+    <footer class="foot">
+      <span>© Sushi Dash</span> ・
+      <button id="reset-btn" style="background:none;border:none;color:#6b6b6b;text-decoration:underline;font-size:0.75rem;cursor:pointer;">データをリセット</button>
+    </footer>
+  </div>
+
+  <!-- ラウンド終了モーダル -->
+  <div class="result-overlay" id="result-overlay">
+    <div class="result-card">
+      <h2>ラウンド終了！</h2>
+      <div class="result-row">
+        <span class="label">スコア</span>
+        <span class="value" id="result-score">0</span>
+      </div>
+      <div class="result-row">
+        <span class="label">最大コンボ</span>
+        <span class="value" id="result-max-combo">0</span>
+      </div>
+      <div class="result-row">
+        <span class="label">獲得コイン</span>
+        <span class="value coin" id="result-coin">🪙 0</span>
+      </div>
+      <div id="result-new-best" style="color:#e63946;font-weight:bold;display:none;margin-top:8px;">✨ ハイスコア更新！</div>
+      <div class="actions">
+        <button id="result-retry"  class="btn-primary">もう一回</button>
+        <button id="result-home"   class="btn-secondary">ホームへ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ガチャ演出オーバーレイ -->
+  <div class="gacha-anim-overlay" id="gacha-anim">
+    <div id="gacha-anim-stage">
+      <div class="gacha-anim-icon">🎁</div>
+      <div style="margin-top:16px;font-weight:bold;">開封中...</div>
+    </div>
+  </div>
+
+  <!-- スクリプト -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
