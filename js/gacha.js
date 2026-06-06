@@ -40,7 +40,7 @@ const Gacha = (() => {
       const color = RARITY_COLORS[result.sushi.rarity];
       stage.innerHTML = `
         <div class="gacha-result-card">
-          <div class="gacha-result-emoji">${result.sushi.emoji}</div>
+          <div class="gacha-result-emoji">${result.sushi.icon || result.sushi.emoji}</div>
           <div class="rarity-badge" style="background:${color};">${result.sushi.rarity}</div>
           <h3>${result.sushi.name}</h3>
           <div class="desc">${result.sushi.desc}</div>

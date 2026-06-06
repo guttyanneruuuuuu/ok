@@ -225,6 +225,10 @@ nav.tabs button.active {
   user-select: none;
   transition: filter 0.1s;
 }
+.sushi-item > span:first-child {
+  position: relative;
+  z-index: 1;
+}
 .sushi-item:hover { filter: brightness(1.1); }
 .sushi-item.selected {
   outline: 4px solid var(--gold);

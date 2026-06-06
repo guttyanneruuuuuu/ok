@@ -11,31 +11,39 @@
 // =============================================================
 
 const SUSHI_DATA = [
-  // ---- N (ノーマル) : 出やすい ----
-  { id: 'tamago',    name: 'たまご',     emoji: '🟨', color: 'green',  rarity: 'N',   desc: '甘くてやさしい味。子供の定番。' },
-  { id: 'kappa',     name: 'かっぱ巻き', emoji: '🥒', color: 'green',  rarity: 'N',   desc: 'きゅうりの細巻き。さっぱり。' },
-  { id: 'inari',     name: 'いなり',     emoji: '🟫', color: 'green',  rarity: 'N',   desc: '甘い油揚げに酢飯。' },
-  { id: 'maguro',    name: 'まぐろ',     emoji: '🔴', color: 'red',    rarity: 'N',   desc: '王道の赤身。間違いなし。' },
-  { id: 'salmon',    name: 'サーモン',   emoji: '🟠', color: 'orange', rarity: 'N',   desc: '不動の人気者。とろける脂。' },
-  { id: 'ika',       name: 'いか',       emoji: '⚪', color: 'white',  rarity: 'N',   desc: 'コリッとした食感が魅力。' },
+  // 仕分け色のテーマ:
+  //   red    = 赤身魚（まぐろ系）
+  //   white  = 白身魚・イカ・貝・卵
+  //   orange = サーモン・エビ・イクラ
+  //   green  = 野菜・巻物
+  // ゲーム中は絵文字で「色」を直感的に判断できるよう、色付き丸で表示。
+  // 図鑑では絵文字も併用するため、emojiは色を示す丸、iconはネタを示す絵文字、にする。
+  // ---- N (ノーマル) ----
+  { id: 'maguro',    name: 'まぐろ',     emoji: '🔴', icon: '🐟', color: 'red',    rarity: 'N',   desc: '王道の赤身。間違いなし。' },
+  { id: 'salmon',    name: 'サーモン',   emoji: '🟠', icon: '🍣', color: 'orange', rarity: 'N',   desc: '不動の人気者。とろける脂。' },
+  { id: 'ika',       name: 'いか',       emoji: '⚪', icon: '🦑', color: 'white',  rarity: 'N',   desc: 'コリッとした食感が魅力。' },
+  { id: 'tamago',    name: 'たまご',     emoji: '⚪', icon: '🍳', color: 'white',  rarity: 'N',   desc: '甘くてやさしい味。子供の定番。' },
+  { id: 'kappa',     name: 'かっぱ巻き', emoji: '🟢', icon: '🥒', color: 'green',  rarity: 'N',   desc: 'きゅうりの細巻き。さっぱり。' },
+  { id: 'natto',     name: '納豆巻き',   emoji: '🟢', icon: '🫘', color: 'green',  rarity: 'N',   desc: 'ねばねば派にはたまらない。' },
 
   // ---- R (レア) ----
-  { id: 'ebi',       name: 'えび',       emoji: '🦐', color: 'orange', rarity: 'R',   desc: 'ぷりぷり食感。茹でて甘く。' },
-  { id: 'hamachi',   name: 'はまち',     emoji: '🟡', color: 'white',  rarity: 'R',   desc: '脂のりが上品なブリの若魚。' },
-  { id: 'tai',       name: 'たい',       emoji: '🐟', color: 'white',  rarity: 'R',   desc: 'おめでたい白身の代表。' },
-  { id: 'ikura',     name: 'いくら',     emoji: '🟧', color: 'orange', rarity: 'R',   desc: 'プチプチはじける醤油の海。' },
-  { id: 'tekka',     name: '鉄火巻き',   emoji: '🍣', color: 'red',    rarity: 'R',   desc: 'まぐろの細巻き。粋。' },
+  { id: 'ebi',       name: 'えび',       emoji: '🟠', icon: '🦐', color: 'orange', rarity: 'R',   desc: 'ぷりぷり食感。茹でて甘く。' },
+  { id: 'hamachi',   name: 'はまち',     emoji: '⚪', icon: '🐟', color: 'white',  rarity: 'R',   desc: '脂のりが上品なブリの若魚。' },
+  { id: 'tai',       name: 'たい',       emoji: '⚪', icon: '🐠', color: 'white',  rarity: 'R',   desc: 'おめでたい白身の代表。' },
+  { id: 'ikura',     name: 'いくら',     emoji: '🟠', icon: '🍥', color: 'orange', rarity: 'R',   desc: 'プチプチはじける醤油の海。' },
+  { id: 'tekka',     name: '鉄火巻き',   emoji: '🔴', icon: '🍙', color: 'red',    rarity: 'R',   desc: 'まぐろの細巻き。粋。' },
+  { id: 'avocado',   name: 'アボカド',   emoji: '🟢', icon: '🥑', color: 'green',  rarity: 'R',   desc: 'クリーミーな新参者。' },
 
   // ---- SR (スーパーレア) ----
-  { id: 'chu_toro',  name: '中とろ',     emoji: '🟥', color: 'red',    rarity: 'SR',  desc: '赤身ととろの中間。バランス◎' },
-  { id: 'uni',       name: 'うに',       emoji: '🟧', color: 'orange', rarity: 'SR',  desc: '海のクリーム。濃厚な甘さ。' },
-  { id: 'anago',     name: 'あなご',     emoji: '🟫', color: 'white',  rarity: 'SR',  desc: 'ふわっと甘いツメが香る。' },
-  { id: 'hotate',    name: 'ほたて',     emoji: '⚪', color: 'white',  rarity: 'SR',  desc: '貝の王様。とろける甘み。' },
+  { id: 'chu_toro',  name: '中とろ',     emoji: '🔴', icon: '🍣', color: 'red',    rarity: 'SR',  desc: '赤身ととろの中間。バランス◎' },
+  { id: 'uni',       name: 'うに',       emoji: '🟠', icon: '⭐', color: 'orange', rarity: 'SR',  desc: '海のクリーム。濃厚な甘さ。' },
+  { id: 'anago',     name: 'あなご',     emoji: '⚪', icon: '🍤', color: 'white',  rarity: 'SR',  desc: 'ふわっと甘いツメが香る。' },
+  { id: 'hotate',    name: 'ほたて',     emoji: '⚪', icon: '🐚', color: 'white',  rarity: 'SR',  desc: '貝の王様。とろける甘み。' },
 
-  // ---- SSR (超レア) ----
-  { id: 'o_toro',    name: '大とろ',     emoji: '💎', color: 'red',    rarity: 'SSR', desc: '寿司の頂点。口でとろける。' },
-  { id: 'kohada',    name: 'こはだ',     emoji: '🌟', color: 'special', rarity: 'SSR', desc: '江戸前の粋。職人技が光る。' },
-  { id: 'awabi',     name: 'あわび',     emoji: '👑', color: 'special', rarity: 'SSR', desc: '高級貝の中の高級貝。' },
+  // ---- SSR (超レア) : ガチャ専用の華やか枠 ----
+  { id: 'o_toro',    name: '大とろ',     emoji: '🔴', icon: '💎', color: 'red',    rarity: 'SSR', desc: '寿司の頂点。口でとろける。' },
+  { id: 'kohada',    name: 'こはだ',     emoji: '⚪', icon: '✨', color: 'white',  rarity: 'SSR', desc: '江戸前の粋。職人技が光る。' },
+  { id: 'awabi',     name: 'あわび',     emoji: '⚪', icon: '👑', color: 'white',  rarity: 'SSR', desc: '高級貝の中の高級貝。' },
 ];
 
 // レアリティ別のガチャ確率（合計 100）
@@ -86,15 +94,13 @@ function rollGacha() {
 }
 
 // ゲーム本体で流す寿司の抽選（ノーマル中心、たまにレア）
+// SSRはガチャ専用の華やか枠なのでゲーム中には流さない。
 function rollGameSushi() {
-  // ゲーム中は基本N、5%でR、1%でSRも紛れる
   const roll = Math.random() * 100;
   let rarity;
-  if (roll < 1) rarity = 'SR';
-  else if (roll < 6) rarity = 'R';
+  if (roll < 8) rarity = 'R';
   else rarity = 'N';
 
-  // special カラーはゲーム中には流さない（ガチャ専用の演出ネタ）
-  const pool = SUSHI_DATA.filter(s => s.rarity === rarity && s.color !== 'special');
+  const pool = SUSHI_DATA.filter(s => s.rarity === rarity);
   return pool[Math.floor(Math.random() * pool.length)];
 }

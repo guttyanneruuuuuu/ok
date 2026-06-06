@@ -63,7 +63,9 @@ function spawnSushi() {
   const sushi = rollGameSushi();
   const el = document.createElement('div');
   el.className = 'sushi-item';
-  el.textContent = sushi.emoji;
+  // ベルト上は「色を判断する」ゲームなので、色丸 + 小さくネタ絵文字 を表示。
+  el.innerHTML = `<span style="font-size:1.7rem;">${sushi.emoji}</span>` +
+                 `<span style="position:absolute;bottom:-2px;right:-2px;font-size:0.95rem;background:#fff;border-radius:50%;padding:1px;">${sushi.icon || ''}</span>`;
   el.dataset.color = sushi.color;
   el.style.right = '-80px';
   el.style.transition = `right ${GAME_CONFIG.BELT_DURATION}ms linear`;
@@ -167,23 +169,52 @@ function updateHUD() {
 // ラウンド開始/終了
 // =============================================================
 function startGame() {
-  runtime = { score: 0, combo: 0, maxCombo: 0, timeLeft: GAME_CONFIG.ROUND_DURATION, active: true };
+  runtime = { score: 0, combo: 0, maxCombo: 0, timeLeft: GAME_CONFIG.ROUND_DURATION, active: false };
   selectedSushi = null;
   activeSushiList = [];
   belt.innerHTML = '';
   updateHUD();
   switchView('game');
 
-  // タイマー
-  countdownLoop = setInterval(() => {
-    runtime.timeLeft -= 1;
-    updateHUD();
-    if (runtime.timeLeft <= 0) endGame();
-  }, 1000);
+  // 3秒カウントダウン演出
+  showCountdown(() => {
+    runtime.active = true;
+    // タイマー
+    countdownLoop = setInterval(() => {
+      runtime.timeLeft -= 1;
+      updateHUD();
+      if (runtime.timeLeft <= 0) endGame();
+    }, 1000);
+    // 寿司生成
+    spawnSushi();
+    spawnLoop = setInterval(spawnSushi, GAME_CONFIG.SPAWN_INTERVAL);
+  });
+}
 
-  // 寿司生成
-  spawnSushi(); // 初回はすぐ
-  spawnLoop = setInterval(spawnSushi, GAME_CONFIG.SPAWN_INTERVAL);
+function showCountdown(onDone) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,248,240,0.85);font-size:5rem;font-weight:bold;color:#e63946;
+    z-index:10;border-radius:14px;`;
+  belt.style.position = 'relative';
+  belt.appendChild(overlay);
+
+  let n = 3;
+  const tick = () => {
+    if (n > 0) {
+      overlay.textContent = n;
+      overlay.style.animation = 'none';
+      void overlay.offsetWidth;
+      overlay.style.animation = 'bounce 0.5s ease';
+      n--;
+      setTimeout(tick, 600);
+    } else {
+      overlay.textContent = 'スタート！';
+      setTimeout(() => { overlay.remove(); onDone(); }, 400);
+    }
+  };
+  tick();
 }
 
 function endGame() {
@@ -240,7 +271,7 @@ function renderCollection() {
     cell.className = 'collection-cell' + (count > 0 ? '' : ' locked');
     cell.innerHTML = `
       <span class="rarity-dot" style="background:${RARITY_COLORS[sushi.rarity]}">${sushi.rarity[0]}</span>
-      <span class="emoji">${count > 0 ? sushi.emoji : '❔'}</span>
+      <span class="emoji">${count > 0 ? (sushi.icon || sushi.emoji) : '❔'}</span>
       <span class="name">${count > 0 ? sushi.name : '???'}</span>
       ${count > 1 ? `<span class="count">x${count}</span>` : ''}
     `;
@@ -284,6 +315,10 @@ function bindEvents() {
   $('result-home').addEventListener('click', () => {
     $('result-overlay').classList.remove('active');
     switchView('home');
+  });
+  $('result-gacha').addEventListener('click', () => {
+    $('result-overlay').classList.remove('active');
+    switchView('gacha');
   });
 
   // ガチャ
